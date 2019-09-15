@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/fragments :: head"></div>
+<body>
+<div th:replace="fragments/fragments :: navbar"></div>
+<div class="container mt-5">
+    <h1 class="display-4 text-center">Редактирование документа</h1>
+    <script th:inline="javascript">
+        function previewImages() {
+            var totalFiles = document.getElementById("album").files.length;
+            for (var i = 0; i < totalFiles; i++) {
+                console.log(i);
+                $('#image_preview').append(
+                    "<div class='col-lg-3 col-md-4 col-6'>" +
+                    "<img style='width: 200px; height: 150px' class='img-fluid img-thumbnail mt-2' src='" + URL.createObjectURL(event.target.files[i]) + "'>" +
+                    "</div>");
+            }
+        }
+    </script>
+    <div class="col-12 mt-5">
+        <form th:action="@{/edit}" th:object="${document}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input th:type="hidden" th:field="*{id}"/>
+            </div>
+            <div class="form-group">
+                <label for="name">Название документа</label>
+                <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Введите название">
+            </div>
+            <div class="form-group">
+                <label for="description">Описание документа</label>
+                <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <input th:type="hidden" th:field="*{author}"/>
+            </div>
+            <div class="form-group">
+                <input th:type="hidden" type="date" th:field="*{creationTime}"/>
+            </div>
+            <div class="form-group">
+                <input th:type="hidden" th:field="*{filesFolder}"/>
+            </div>
+            <div class="form-group">
+                <input th:type="hidden" th:field="*{filesAbsolutePath}"/>
+            </div>
+            <div class="form-group">
+                <input th:type="hidden" th:field="*{documentFileName}"/>
+            </div>
+            <div class="form-group">
+                <input th:type="hidden" th:field="*{imageNames}"/>
+            </div>
+            <p>Загрузить изображения</p>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="album" name="album" onchange="previewImages();"
+                       multiple>
+                <label class="custom-file-label" for="album">Выберите одно или несколько изображений</label>
+                <hr>
+            </div>
+            <div class="row text-center text-lg-left mt-2" id="uploaded_image">
+                <div class="col-lg-3 col-md-4 col-6" th:each="image : ${document.imageNames}">
+                    <img th:id="'img_' + ${image}" class="img-fluid img-thumbnail mt-2"
+                         style="width: 200px; height: 150px"
+                         th:src="@{'~/img/' + ${document.filesAbsolutePath} + '/images/' + ${image}}" alt="">
+                    <button th:id="'delete' +${image}" th:value="${image}" th:title="Удалить"
+                            class="btn btn-sm btn-outline-danger float-none mr-3 delete">Удалить
+                    </button>
+                </div>
+            </div>
+            <hr>
+            <div class="row text-center text-lg-left mt-2" id="image_preview"></div>
+            <hr>
+            <div class="form-group mt-3">
+                <div class="alert alert-danger m-2" role="alert">При загрузке нового документа, старый автоматически
+                    удалится!
+                </div>
+                <dl class="row">
+                    <dt class="col-sm-3">Прикрепленный документ:</dt>
+                    <dd class="col-sm-9"><a
+                            th:href="@{'/files/' + ${document.filesFolder} + '/' + ${document.documentFileName}}"><span
+                            th:text="${document.documentFileName}"></span></a></dd>
+                </dl>
+                <label for="document">Выбирете документ</label>
+                <input type="file" class="form-control-file" id="document" name="document">
+            </div>
+            <hr>
+            <button type="submit" class="btn btn-lg btn btn-dark btn-block text-uppercase mt-4">Изменить</button>
+        </form>
+        <script th:inline="javascript">
+            $(".delete").click(function () {
+                console.log(($(this).attr('id')));
+                console.log(($(this).attr('value')));
+                $.ajax({
+                    type: "GET",
+                    url: '/files/' + [[${document.id}]] + '/delete/' + ($(this).attr('value')),
+                    success: function (result) {
+                        console.log('ok');
+                    },
+                    error: function (result) {
+                        console.log('error');
+                    }
+                });
+                $(this).parent('div').remove();
+            });
+        </script>
+    </div>
+</div>
+</body>
+</html>

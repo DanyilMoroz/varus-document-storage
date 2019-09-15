@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:replace="fragments/fragments :: head"></div>
+<body>
+<div th:replace="fragments/fragments :: navbar"></div>
+<div class="container mt-5">
+    <h1 class="display-4 text-center">Электронное хранилище документов</h1>
+    <div class="col-12">
+        <div class="table-responsive mt-3">
+            <a th:href="@{'/add'}" sec:authorize="hasAuthority('ADMIN')" class="btn btn-success float-md-right">Добавить
+                документ</a>
+            <table class="table table-hover  mt-5">
+                <thead class="thead-dark ">
+                <tr>
+                    <th scope="col" class="text-center">Наименование</th>
+                    <th scope="col" class="text-center">Автор</th>
+                    <th scope="col" class="text-center">Дата создания</th>
+                    <th scope="col" class="text-right" sec:authorize="hasAuthority('ADMIN')">Редактирование</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="document: ${documents}">
+                    <td class="text-center">
+                        <a th:href="@{'document/' + ${document.id}}"><span
+                                th:text="${#strings.abbreviate(document.name, 69)}"></span></a>
+                    </td>
+                    <td class="text-center" th:text="${document.author}">Автор</td>
+                    <td class="text-center" th:text="${document.creationTime}">Дата создания</td>
+                    <td class="text-right" sec:authorize="hasAuthority('ADMIN')">
+                        <a th:href="@{'edit/' + ${document.id}}" th:title="Редактировать"
+                           class="btn btn-sm btn-outline-info float-none mr-2"><i class="far fa-edit"></i></a>
+                        <a th:href="@{'delete/' + ${document.id}}" th:title="Удалить"
+                           class="btn btn-sm btn-outline-danger float-none mr-3"><i class="far fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

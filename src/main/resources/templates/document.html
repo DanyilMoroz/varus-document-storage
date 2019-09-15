@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/fragments :: head"></div>
+<body>
+<div th:replace="fragments/fragments :: navbar"></div>
+<div class="container mt-5">
+    <div class="col-12">
+        <h1 class="display-4 text-break text-center" th:text="${document.name}">Имя документа</h1>
+        <dl class="row mt-4">
+            <dt class="col-sm-3">Описание документа:</dt>
+            <dd class="col-sm-9"><span th:text="${document.description}"></span></dd>
+        </dl>
+        <div class="row text-center text-lg-left mt-4">
+            <div class="col-lg-3 col-md-4 col-6" th:each="image : ${document.imageNames}">
+                <img class="img-fluid img-thumbnail mt-2" th:style="'width: 200px; height: 150px'"
+                     th:src="@{'~/img/' + ${document.filesAbsolutePath} + '/images/' + ${image}}" alt="">
+            </div>
+        </div>
+        <hr>
+        <dl class="row">
+            <dt class="col-sm-3">Прикрепленный документ:</dt>
+            <dd class="col-sm-9"><a
+                    th:href="@{'/files/' + ${document.filesFolder} + '/' + ${document.documentFileName}}"><span
+                    th:text="${document.documentFileName}"></span></a></dd>
+        </dl>
+    </div>
+</div>
+</body>
+</html>

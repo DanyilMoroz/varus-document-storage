@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/fragments :: head"></div>
+<body>
+<div th:replace="fragments/fragments :: navbar"></div>
+<div class="container mt-5">
+    <h1 class="display-4 text-center">Для тестов</h1>
+    <div class="col-12">
+        <h1 class="display-4 text-center" th:text="${document.name}">Имя документа</h1>
+        <p th:text="${document.description}"></p>
+        <div class="row mt-2" id="image_preview">
+            <div class="col-lg-3 col-md-4 col-6" th:each="image : ${document.imageNames}">
+                <img th:id="'img_' + ${image}" class="img-fluid img-thumbnail mt-2"
+                     th:style="'width: 200px; height: 150px'"
+                     th:src="@{'~/img/' + ${document.filesAbsolutePath} + '/images/' + ${image}}" alt="">
+                <button th:id="'delete' +${image}" th:value="${image}" th:title="Удалить"
+                        class="btn btn-sm btn-outline-danger float-none mr-3 delete">Удалить
+                </button>
+            </div>
+            <script th:inline="javascript">
+                $(".delete").click(function () {
+                    console.log(($(this).attr('id')));
+                    console.log(($(this).attr('value')));
+                    $.ajax({
+                        type: "GET",
+                        url: '/files/' + [[${document.id}]] + '/delete/' + ($(this).attr('value')),
+                        success: function (result) {
+                            console.log('ok');
+                        },
+                        error: function (result) {
+                            console.log('error');
+                        }
+                    });
+                    $(this).parent('div').remove();
+                });
+            </script>
+        </div>
+        <hr>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+1. Course table:
+	create table course(
+	id bigint identity not null, 
+	name varchar not null,
+	coursecategory_id bigint,
+	foreign key(coursecategory_id) references course_category(id)
+	);
+
+2. Insert Course category:
+	insert into course_category(id, name) values(default, 'IT');
+	insert into course_category(id, name) values(default, 'Art & Design');
+	insert into course_category(id, name) values(default, 'Data Science');
+	insert into course_category(id, name) values(default, 'Mathematics');
+	insert into course_category(id, name) values(default, 'Science');
+	insert into course_category(id, name) values(default, 'Programming');
+
+3. Insert Course:
+	insert into course(id, name, coursecategory_id) values (default, 'Java Programming', 1);
+
+4. Select Courses:
+	select course.id as courseId, course.name as courseName, course_category.id as CategoryId, 
+	course_category.name as categoryName from course left join course_category on course.coursecategory_id = course_category.id;
+
+5. Insert data:
+insert into course(id, name, coursecategory_id) values (default, '18th-Century Opera: Handel & Mozart', 33);
+insert into course(id, name, coursecategory_id) values (default, '19th-Century Opera: Meyerbeer, Wagner, & Verdi', 33);
+insert into course(id, name, coursecategory_id) values (default, 'The Architectural Imagination', 33);
+insert into course(id, name, coursecategory_id) values (default, 'Pyramids of Giza: Ancient Egyptian Art and Archaeology', 33);
+insert into course(id, name, coursecategory_id) values (default, 'Data Science: Capstone', 34);
+insert into course(id, name, coursecategory_id) values (default, 'Data Science: Inference and Modeling', 34);
+insert into course(id, name, coursecategory_id) values (default, 'Data Science: Productivity Tools', 34);
+insert into course(id, name, coursecategory_id) values (default, 'Data Science: Wrangling', 34);
+insert into course(id, name, coursecategory_id) values (default, 'Data Science: Linear Regression', 34);
+insert into course(id, name, coursecategory_id) values (default, 'Fat Chance: Probability from the Ground Up', 35);
+insert into course(id, name, coursecategory_id) values (default, 'Business Analytics', 35);
+insert into course(id, name, coursecategory_id) values (default, 'Causal Diagrams: Draw Your Assumptions Before Your Conclusions', 35);
+insert into course(id, name, coursecategory_id) values (default, 'Fundamentals of Neuroscience, Part 1: The Electrical Properties of the Neuron', 36);
+insert into course(id, name, coursecategory_id) values (default, 'Science & Cooking: From Haute Cuisine to Soft Matter Science (chemistry)', 36);
+insert into course(id, name, coursecategory_id) values (default, 'Fundamentals of Neuroscience, Part 2: Neurons and Networks', 36);
+insert into course(id, name, coursecategory_id) values (default, 'Backyard Meteorology: The Science of Weather', 36);
+insert into course(id, name, coursecategory_id) values (default, 'Fundamentals of Neuroscience, Part 3: The Brain', 36);
+insert into course(id, name, coursecategory_id) values (default, 'CS50's Web Programming with Python and JavaScript', 37);
+insert into course(id, name, coursecategory_id) values (default, 'CS50's Mobile App Development with React Native', 37);
+insert into course(id, name, coursecategory_id) values (default, 'CS50: Introduction to Computer Science', 37);
+insert into course(id, name, coursecategory_id) values (default, 'CS50's Introduction to Game Development', 37);
