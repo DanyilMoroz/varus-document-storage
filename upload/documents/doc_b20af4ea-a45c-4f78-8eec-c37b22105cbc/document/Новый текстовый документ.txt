@@ -1,6 +1,0 @@
-var result = new HashMap<String, Category>();
-while(rs.next()) {
-    var categoryId = rs.getInt("category_id")
-    result.computeIfAbsent(categoryId , new Category(categoryId, rs.getString("category_name), 
-						new ArrayList<>())).getCources().add(new Course(rs.getInt("course_id", rs.getString("course_name"))));
-}
