@@ -51,8 +51,10 @@ public class FileService {
     }
 
     public void deleteFiles(Document document) throws IOException {
-        File filesToDelete = new File(document.getFilesAbsolutePath());
-        FileUtils.deleteDirectory(filesToDelete);
+        if(document.getFilesAbsolutePath() != null){
+            File filesToDelete = new File(document.getFilesAbsolutePath());
+            FileUtils.deleteDirectory(filesToDelete);
+        }
     }
 
     public Document deleteImage(Document document, String imageName) {

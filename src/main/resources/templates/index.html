@@ -27,7 +27,7 @@
                                 th:text="${#strings.abbreviate(document.name, 69)}"></span></a>
                     </td>
                     <td class="text-center" th:text="${document.author}">Автор</td>
-                    <td class="text-center" th:text="${document.creationTime}">Дата создания</td>
+                    <td class="text-center" th:text="${#temporals.format(document.creationTime, 'dd MMMM, yyyy')}">Дата создания</td>
                     <td class="text-right" sec:authorize="hasAuthority('ADMIN')">
                         <a th:href="@{'edit/' + ${document.id}}" th:title="Редактировать"
                            class="btn btn-sm btn-outline-info float-none mr-2"><i class="far fa-edit"></i></a>
