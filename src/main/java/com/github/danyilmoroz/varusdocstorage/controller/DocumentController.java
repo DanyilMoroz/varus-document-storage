@@ -39,13 +39,6 @@ public class DocumentController {
         return "document";
     }
 
-    @GetMapping("document-test/{id}")
-    public String getTestDocument(@PathVariable Long id, Model model) {
-        Document document = documentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        model.addAttribute("document", document);
-        return "test-page";
-    }
-
     @GetMapping("add")
     public String addForm(Model model) {
         model.addAttribute("newDocument", new Document());
