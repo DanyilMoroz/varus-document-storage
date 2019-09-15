@@ -8,7 +8,8 @@ Test task for Varus
 
 + Просмотр документов в виде таблицы:
 
-| Left-Aligned  | Center Aligned  | Right Aligned |
+| First Header  | Second Header | Second Header | 
+| ------------- | ------------- |------------- |
 
 
 наименование|автор|дата создания
