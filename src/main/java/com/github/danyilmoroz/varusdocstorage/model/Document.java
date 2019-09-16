@@ -21,7 +21,7 @@ public class Document {
     @Column(length = 65535)
     private String description;
     private LocalDateTime creationTime;
-    private String filesAbsolutePath;
+    private String filesRelativePath;
     private String filesFolder;
     private String documentFileName;
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)

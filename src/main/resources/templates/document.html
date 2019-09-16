@@ -14,7 +14,7 @@
         <div class="row text-center text-lg-left mt-4">
             <div class="col-lg-3 col-md-4 col-6" th:each="image : ${document.imageNames}">
                 <img class="img-fluid img-thumbnail mt-2" th:style="'width: 200px; height: 150px'"
-                     th:src="@{'~/img/' + ${document.filesAbsolutePath} + '/images/' + ${image}}" alt="">
+                     th:src="@{'~/img/' + ${uploadPath} + ${document.filesRelativePath} + '/images/' + ${image}}" alt="">
             </div>
         </div>
         <hr>

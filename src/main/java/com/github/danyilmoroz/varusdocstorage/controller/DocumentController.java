@@ -5,6 +5,7 @@ import com.github.danyilmoroz.varusdocstorage.model.User;
 import com.github.danyilmoroz.varusdocstorage.repository.DocumentRepository;
 import com.github.danyilmoroz.varusdocstorage.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,9 @@ public class DocumentController {
     @Autowired
     private FileService fileService;
 
+    @Value("${files.upload.uploadPath}")
+    private String uploadPath;
+
     @GetMapping
     public String index(Model model) {
         model.addAttribute("documents", documentRepository.findAll());
@@ -35,6 +39,7 @@ public class DocumentController {
     @GetMapping("document/{id}")
     public String getDocument(@PathVariable Long id, Model model) {
         Document document = documentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        model.addAttribute("uploadPath", fileService.uploadPath());
         model.addAttribute("document", document);
         return "document";
     }
@@ -68,6 +73,7 @@ public class DocumentController {
 
     @GetMapping("edit/{id}")
     public String updateDocumentForm(@PathVariable Long id, Model model) {
+        model.addAttribute("uploadPath", fileService.uploadPath());
         model.addAttribute("document", documentRepository.findById(id).orElseThrow(EntityNotFoundException::new));
         return "update";
     }

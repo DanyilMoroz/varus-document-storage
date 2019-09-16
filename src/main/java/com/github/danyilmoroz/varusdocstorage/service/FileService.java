@@ -18,6 +18,7 @@ public class FileService {
     @Value("${files.upload.uploadPath}")
     private String uploadPath;
 
+
     public Document saveFiles(Document document, MultipartFile documentFile, List<MultipartFile> album) throws IOException {
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
@@ -26,15 +27,15 @@ public class FileService {
 
         String docUUID = "doc_" + UUID.randomUUID().toString();
         document.setFilesFolder(docUUID);
-        File documentFilesFolders = new File(uploadPath + "/documents/" + docUUID);
+        File documentFilesFolders = new File(uploadDir.getAbsolutePath() + "/documents/" + docUUID);
         documentFilesFolders.mkdirs();
-        document.setFilesAbsolutePath(documentFilesFolders.getAbsolutePath());
+        document.setFilesRelativePath("/documents/" + docUUID);
 
         if (documentFile != null && !documentFile.isEmpty()) {
             File documentFolder = new File(documentFilesFolders.getAbsolutePath() + "/document");
             documentFolder.mkdir();
-            documentFile.transferTo(new File(documentFolder.getAbsolutePath() + "/" + documentFile.getOriginalFilename()));
             document.setDocumentFileName(documentFile.getOriginalFilename());
+            documentFile.transferTo(new File(documentFolder.getAbsolutePath() + "/" + documentFile.getOriginalFilename()));
         }
 
         if (!isAlbumEmpty(album)) {
@@ -50,43 +51,55 @@ public class FileService {
         return document;
     }
 
+    public Document update(Document document, MultipartFile documentFile, List<MultipartFile> album) throws IOException {
+
+        File upload = new File(uploadPath);
+        if (document.getFilesRelativePath().isEmpty()) {
+            String docUUID = "doc_" + UUID.randomUUID().toString();
+            document.setFilesFolder(docUUID);
+            document.setFilesRelativePath("/documents/" + docUUID);
+        }
+        File documentPath = new File(upload.getAbsolutePath() + document.getFilesRelativePath() + "/document");
+        if (!documentPath.exists()) {
+            documentPath.mkdirs();
+        }
+        if (documentFile != null && !documentFile.isEmpty()) {
+            File oldDocument = new File(documentPath.getAbsolutePath() + "/" + document.getDocumentFileName());
+            oldDocument.delete();
+            documentPath.mkdirs();
+            document.setDocumentFileName(documentFile.getOriginalFilename());
+            documentFile.transferTo(new File(documentPath.getAbsolutePath() + "/" + documentFile.getOriginalFilename()));
+        }
+
+        File albumPath = new File(upload.getAbsolutePath() + document.getFilesRelativePath() + "/images");
+        if (!albumPath.exists()) {
+            albumPath.mkdirs();
+        }
+        if (!isAlbumEmpty(album)) {
+            for (MultipartFile image : album) {
+                document.getImageNames().add(image.getOriginalFilename());
+                image.transferTo(new File(albumPath.getAbsolutePath() + "/" + image.getOriginalFilename()));
+            }
+        }
+        return document;
+    }
+
     public void deleteFiles(Document document) throws IOException {
-        if(document.getFilesAbsolutePath() != null){
-            File filesToDelete = new File(document.getFilesAbsolutePath());
+        if (document.getFilesRelativePath() != null) {
+            File upload = new File(uploadPath);
+            File filesToDelete = new File(upload.getAbsolutePath() + document.getFilesRelativePath());
             FileUtils.deleteDirectory(filesToDelete);
         }
     }
 
     public Document deleteImage(Document document, String imageName) {
-        File imageToDelete = new File(document.getFilesAbsolutePath() + "/images/" + imageName);
+        File upload = new File(uploadPath);
+        File imageToDelete = new File(upload.getAbsolutePath() + document.getFilesRelativePath() + "/images/" + imageName);
 
         if (imageToDelete.exists()) {
             imageToDelete.delete();
         }
         document.getImageNames().remove(imageName);
-        return document;
-    }
-
-    public Document update(Document document, MultipartFile documentFile, List<MultipartFile> album) throws IOException {
-
-        String documentFolder = document.getFilesAbsolutePath() + "/document";
-        String albumFolder = document.getFilesAbsolutePath() + "/images";
-
-        if (documentFile != null && !documentFile.isEmpty()) {
-            File oldDocument = new File(documentFolder + "/" + document.getDocumentFileName());
-            if (oldDocument.exists()) {
-                oldDocument.delete();
-            }
-            documentFile.transferTo(new File(documentFolder + "/" + documentFile.getOriginalFilename()));
-        }
-
-        if (!isAlbumEmpty(album)) {
-            File images = new File(albumFolder);
-            for (MultipartFile image : album) {
-                document.getImageNames().add(image.getOriginalFilename());
-                image.transferTo(new File(images.getAbsolutePath() + "/" + image.getOriginalFilename()));
-            }
-        }
         return document;
     }
 
@@ -96,5 +109,10 @@ public class FileService {
             isEmpty = f.isEmpty();
         }
         return isEmpty;
+    }
+
+    public String uploadPath() {
+        File file = new File(uploadPath);
+        return file.getAbsolutePath();
     }
 }
